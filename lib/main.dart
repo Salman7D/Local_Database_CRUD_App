@@ -53,8 +53,8 @@ class DatabaseHelper {
 
   DatabaseHelper._init();
 
-  Future<Database> get database async{
-    if(_database != null)
+  Future<Database> get database async {
+    if (_database != null)
       return _database!;
 
     _database = await _initDatabase();
@@ -67,7 +67,7 @@ class DatabaseHelper {
     return await openDatabase(
         path,
         version: 1,
-        onCreate: (db, version) async{
+        onCreate: (db, version) async {
           await db.execute('''
       CREATE TABLE contacts(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -83,7 +83,7 @@ class DatabaseHelper {
   }
 
   //create
-  Future<int> insertContact(Contact contact) async{
+  Future<int> insertContact(Contact contact) async {
     final db = await instance.database;
 
     return await db.insert("contacts",
@@ -92,7 +92,7 @@ class DatabaseHelper {
   }
 
   //read
-  Future<List<Contact>> getContacts() async{
+  Future<List<Contact>> getContacts() async {
     final db = await instance.database;
 
     final result = await db.query(
@@ -104,30 +104,42 @@ class DatabaseHelper {
   }
 
   //update
-  Future<int> updateContact(Contact contact) async{
+  Future<int> updateContact(Contact contact) async {
     final db = await instance.database;
 
     return await db.update("contacts",
-    contact.toMap(),
+        contact.toMap(),
         where: "id = ?",
         whereArgs: [contact.id]
     );
-}
+  }
 
 //delete
-  Future<int> deleteContact(int id) async{
+  Future<int> deleteContact(int id) async {
     final db = await instance.database;
 
     return await db.delete("contacts",
-      where: "id : ?",
-      whereArgs: [id]
+        where: "id : ?",
+        whereArgs: [id]
     );
+  }
+
+//favorite
+  Future<int> toggleFavorite(Contact contact) async {
+    final db = await instance.database;
+
+    final updatedContact = Contact(
+        id: contact.id,
+        name: contact.name,
+        phone: contact.phone,
+        email: contact.email,
+        address: contact.address,
+        isFavorite: contact.isFavorite == 1 ? 0 : 1
+    );
+
+    return await updateContact(updatedContact);
+  }
 }
-
-
-
-}
-
 
 
 class contactApp extends StatelessWidget {
