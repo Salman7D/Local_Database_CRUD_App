@@ -104,7 +104,7 @@ class DatabaseHelper {
   }
 
   //update
-Future<int> updateContact(Contact contact) async{
+  Future<int> updateContact(Contact contact) async{
     final db = await instance.database;
 
     return await db.update("contacts",
@@ -113,6 +113,17 @@ Future<int> updateContact(Contact contact) async{
         whereArgs: [contact.id]
     );
 }
+
+//delete
+  Future<int> deleteContact(int id) async{
+    final db = await instance.database;
+
+    return await db.delete("contacts",
+      where: "id : ?",
+      whereArgs: [id]
+    );
+}
+
 
 
 }
