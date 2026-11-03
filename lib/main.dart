@@ -102,6 +102,19 @@ class DatabaseHelper {
 
     return result.map((map) => Contact.fromMap(map)).toList();
   }
+
+  //update
+Future<int> updateContact(Contact contact) async{
+    final db = await instance.database;
+
+    return await db.update("contacts",
+    contact.toMap(),
+        where: "id = ?",
+        whereArgs: [contact.id]
+    );
+}
+
+
 }
 
 
