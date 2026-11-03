@@ -23,6 +23,28 @@ class Contact{
     required this.address,
     this.isFavorite = 0
 });
+
+  Map<String, dynamic> toMap(){
+    return{
+      "id" : id,
+      "name" : name,
+      'phone': phone,
+      'email': email,
+      'address': address,
+      'isFavorite': isFavorite,
+    };
+  }
+
+  factory Contact.fromMap(Map<String, dynamic> map){
+    return Contact(
+        id: map["id"],
+        name: map["name"],
+        phone: map["phone"],
+        email: map["email"],
+        address: map["address"],
+        isFavorite: map["isFavorite"]
+    );
+  }
 }
 
 class DatabaseHelper {
@@ -39,7 +61,7 @@ class DatabaseHelper {
     return _database!;
   }
 
-  Future<Database?> _initDatabase() async {
+  Future<Database> _initDatabase() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, "contacts.db");
     return await openDatabase(
@@ -60,7 +82,17 @@ class DatabaseHelper {
     );
   }
 
+  //create
+  Future<int> insertContact(Contact contact) async{
+    final db = await instance.database;
+
+    return await db.insert("contacts",
+        contact.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
 }
+
+
 
 class contactApp extends StatelessWidget {
   const contactApp({super.key});
