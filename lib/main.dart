@@ -90,6 +90,18 @@ class DatabaseHelper {
         contact.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
+
+  //read
+  Future<List<Contact>> getContacts() async{
+    final db = await instance.database;
+
+    final result = await db.query(
+      "contacts",
+      orderBy: "name COLLATE NOCASE ASC",
+    );
+
+    return result.map((map) => Contact.fromMap(map)).toList();
+  }
 }
 
 
